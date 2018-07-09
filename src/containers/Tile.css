@@ -1,0 +1,24 @@
+.tile {
+  align-items: stretch;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 5rem;
+  justify-content: space-between;
+  transition: background 0.3s ease-in-out, color 0.2s ease-in-out;
+  width: 5rem;
+}
+
+.tile--isActive {
+  background-color: #333;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.tile__clicks {
+  font-size: 2.5rem;
+}
+.tile__time {
+  font-size: 0.825rem;
+}
