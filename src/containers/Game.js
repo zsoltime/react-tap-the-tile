@@ -53,7 +53,7 @@ export class Game extends Component {
   };
 
   gameOver = () => {
-    console.log('Game over');
+    alert('Game over');
 
     window.clearInterval(this.intervalID);
 
