@@ -1,60 +1,94 @@
 import React, { Component } from 'react';
 import random from 'utils.random';
 
-import Tile from './Tile';
-import './Game.css';
+import Board from '../components/Board';
+import Button from '../components/Button';
+import Footer from '../components/Footer';
+import GameOver from '../components/GameOver';
+import Splash from '../components/Splash';
+import { Content, Overlay } from '../components/Modal.style';
+import { Wrapper } from '../components/Common.style';
 
-const MAX_ACTIVE_TILES = 4;
+const MAX_ACTIVE_TILES = 5;
 const NUMBER_OF_CLICKS = [1, 1, 1, 1, 1, 1, 1, 1, 3, 5];
 const POINTS_PER_CORRECT = 5;
 const INITIAL_TILES = {
-  0: { isActive: false, clicksRemaining: 0 },
-  1: { isActive: false, clicksRemaining: 0 },
-  2: { isActive: false, clicksRemaining: 0 },
-  3: { isActive: false, clicksRemaining: 0 },
-  4: { isActive: false, clicksRemaining: 0 },
-  5: { isActive: false, clicksRemaining: 0 },
-  6: { isActive: false, clicksRemaining: 0 },
-  7: { isActive: false, clicksRemaining: 0 },
-  8: { isActive: false, clicksRemaining: 0 },
-  9: { isActive: false, clicksRemaining: 0 },
-  10: { isActive: false, clicksRemaining: 0 },
-  11: { isActive: false, clicksRemaining: 0 },
-  12: { isActive: false, clicksRemaining: 0 },
-  13: { isActive: false, clicksRemaining: 0 },
-  14: { isActive: false, clicksRemaining: 0 },
-  15: { isActive: false, clicksRemaining: 0 },
+  0: { clicksRemaining: 0, isActive: false },
+  1: { clicksRemaining: 0, isActive: false },
+  2: { clicksRemaining: 0, isActive: false },
+  3: { clicksRemaining: 0, isActive: false },
+  4: { clicksRemaining: 0, isActive: false },
+  5: { clicksRemaining: 0, isActive: false },
+  6: { clicksRemaining: 0, isActive: false },
+  7: { clicksRemaining: 0, isActive: false },
+  8: { clicksRemaining: 0, isActive: false },
+  9: { clicksRemaining: 0, isActive: false },
+  10: { clicksRemaining: 0, isActive: false },
+  11: { clicksRemaining: 0, isActive: false },
+  12: { clicksRemaining: 0, isActive: false },
+  13: { clicksRemaining: 0, isActive: false },
+  14: { clicksRemaining: 0, isActive: false },
+  15: { clicksRemaining: 0, isActive: false },
 };
 
 export class Game extends Component {
   state = {
     highestScore: 0,
     isRunning: false,
+    missedTiles: 0,
     score: 0,
-    tiles: INITIAL_TILES,
+    showGameOver: false,
+    showSplash: true,
+    tiles: { ...INITIAL_TILES },
   };
 
   componentWillUnmount() {
     window.clearInterval(this.intervalID);
   }
 
-  startGame = () => {
-    this.activateTile();
-    this.setState({
-      isRunning: true,
-      score: 0,
-    });
+  activateTile = id => {
+    const tileId = id ? id : this.getRandomTile();
 
-    this.intervalID = window.setInterval(() => {
-      if (this.activeTiles() < MAX_ACTIVE_TILES) {
-        this.activateTile();
+    if (!id && this.activeTiles().length >= MAX_ACTIVE_TILES) {
+      return;
+    }
+
+    this.setState(state => ({
+      tiles: {
+        ...state.tiles,
+        [tileId]: {
+          clicksRemaining: random(NUMBER_OF_CLICKS),
+          isActive: true,
+        },
+      },
+    }));
+  };
+
+  activeTiles = () => {
+    const { tiles } = this.state;
+    const filterActives = (filtered, curr) => {
+      if (tiles[curr].isActive) {
+        return [...filtered, { ...tiles[curr], id: curr }];
       }
-    }, 1000);
+      return filtered;
+    };
+
+    return Object.keys(tiles).reduce(filterActives, []);
+  };
+
+  deactivateTile = id => {
+    this.setState(state => ({
+      tiles: {
+        ...state.tiles,
+        [id]: {
+          clicksRemaining: 0,
+          isActive: false,
+        },
+      },
+    }));
   };
 
   gameOver = () => {
-    alert('Game over');
-
     window.clearInterval(this.intervalID);
 
     this.setState(state => ({
@@ -63,46 +97,19 @@ export class Game extends Component {
           ? state.score
           : state.highestScore,
       isRunning: false,
+      showGameOver: true,
       tiles: { ...INITIAL_TILES },
     }));
   };
 
-  activateTile = id => {
-    const tileId = id ? id : random(15);
+  getRandomTile = () => {
+    const id = random(15);
 
-    if (!id && this.activeTiles() >= MAX_ACTIVE_TILES) {
-      return;
+    if (this.isAlreadyActive(id)) {
+      return this.getRandomTile();
     }
 
-    this.setState(state => ({
-      tiles: {
-        ...state.tiles,
-        [tileId]: {
-          ...state.tiles[tileId],
-          isActive: true,
-        },
-      },
-    }));
-  };
-
-  deactivateTile = id => {
-    this.setState(state => ({
-      tiles: {
-        ...state.tiles,
-        [id]: {
-          ...state.tiles[id],
-          isActive: false,
-        },
-      },
-    }));
-  };
-
-  activeTiles = () => {
-    const { tiles } = this.state;
-    const countActive = (acc, curr) =>
-      tiles[curr].isActive ? acc + 1 : acc;
-
-    return Object.keys(tiles).reduce(countActive, 0);
+    return id;
   };
 
   handleClick = i => {
@@ -112,16 +119,17 @@ export class Game extends Component {
       return this.gameOver();
     }
 
+    // activate a random tile
     this.activateTile();
 
     this.setState(state => {
       const tile = { ...state.tiles[i] };
+      const moreClicksAvailable = tile.clicksRemaining > 1;
 
-      tile.isActive = tile.clicksRemaining > 1 ? true : false;
-      tile.clicksRemaining =
-        tile.clicksRemaining > 1
-          ? tile.clicksRemaining - 1
-          : random(NUMBER_OF_CLICKS);
+      tile.isActive = moreClicksAvailable ? true : false;
+      tile.clicksRemaining = moreClicksAvailable
+        ? tile.clicksRemaining - 1
+        : 0;
 
       return {
         score: state.score + POINTS_PER_CORRECT,
@@ -134,37 +142,81 @@ export class Game extends Component {
   };
 
   handleTimeout = i => {
+    this.setState(state => ({
+      missedTiles: state.missedTiles + state.tiles[i].clicksRemaining,
+    }));
     this.deactivateTile(i);
     this.activateTile();
   };
 
-  renderTiles = () => {
-    return Object.keys(this.state.tiles).map(i => {
-      const tile = this.state.tiles[i];
+  isAlreadyActive = id =>
+    !!this.activeTiles().filter(tile => tile.id == id).length;
 
-      return (
-        <Tile
-          key={i}
-          clicksRemaining={tile.clicksRemaining}
-          id={i}
-          isActive={tile.isActive}
-          onClick={this.handleClick}
-          onTimeout={this.handleTimeout}
-        />
-      );
+  resetGame = () => {
+    this.setState({
+      isRunning: true,
+      missedTiles: 0,
+      score: 0,
+      showGameOver: false,
+      showSplash: false,
     });
+  };
+
+  startGame = () => {
+    this.resetGame();
+    this.activateTile();
+
+    this.intervalID = window.setInterval(() => {
+      if (this.activeTiles().length < MAX_ACTIVE_TILES) {
+        this.activateTile();
+      }
+    }, 1000);
   };
 
   render() {
     return (
-      <div className="container">
-        <div className="board">{this.renderTiles()}</div>
-        <div className="score">Score: {this.state.score}</div>
-        {!this.state.isRunning && (
-          <button onClick={this.startGame}>Start Game</button>
-        )}
-        <div>{this.activeTiles()}</div>
-      </div>
+      <>
+        <main>
+          <Wrapper>
+            <Board
+              tiles={this.state.tiles}
+              onClick={this.handleClick}
+              onTimeout={this.handleTimeout}
+            />
+            {this.state.isRunning && (
+              <Button
+                primary
+                onClick={() =>
+                  alert('The game is paused, wowzers 😆')
+                }
+              >
+                Pause Game
+              </Button>
+            )}
+            <div className="score">
+              Score: {this.state.score} | Missed:{' '}
+              {this.state.missedTiles}
+            </div>
+          </Wrapper>
+
+          <Overlay isOpen={this.state.showSplash}>
+            <Content>
+              <Splash onStart={this.startGame} />
+            </Content>
+          </Overlay>
+
+          <Overlay isOpen={this.state.showGameOver}>
+            <Content>
+              <GameOver
+                highScore={this.state.highestScore}
+                onStart={this.startGame}
+                score={this.state.score}
+              />
+            </Content>
+          </Overlay>
+        </main>
+        <Footer />
+      </>
     );
   }
 }
