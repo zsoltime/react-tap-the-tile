@@ -1,7 +1,28 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-import './Tile.css';
+const StyledTile = styled.button.attrs({ type: 'button' })`
+  align-items: stretch;
+  background-color: ${props => (props.isActive ? '#363636' : '#fff')};
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 23%;
+  justify-content: space-between;
+  transition: background 0.3s ease-in-out;
+  width: 23%;
+`;
+
+const RemainingClicks = styled.div`
+  font-size: 2.5rem;
+`;
+
+const RemainingTime = styled.div`
+  font-size: 0.825rem;
+`;
 
 const DEFAULT_TIMER = 5000;
 const TIMER_INTERVAL = 500;
@@ -72,25 +93,19 @@ export class Tile extends Component {
     const { timeRemaining } = this.state;
     const { clicksRemaining, id, isActive, onClick } = this.props;
 
-    const activeContent = isActive && (
-      <Fragment>
-        <div className="tile__clicks" key="0">
-          {clicksRemaining > 1 && clicksRemaining}
-        </div>
-        <div className="tile__time" key="1">
-          {timeRemaining > 0 && Math.floor(timeRemaining / 1000)}
-        </div>
-      </Fragment>
-    );
-
     return (
-      <button
-        className={`tile${isActive ? ' tile--isActive' : ''}`}
-        type="button"
-        onClick={() => onClick(id)}
-      >
-        {activeContent}
-      </button>
+      <StyledTile isActive={isActive} onClick={() => onClick(id)}>
+        {isActive && (
+          <>
+            <RemainingClicks key="0">
+          {clicksRemaining > 1 && clicksRemaining}
+            </RemainingClicks>
+            <RemainingTime key="1">
+          {timeRemaining > 0 && Math.floor(timeRemaining / 1000)}
+            </RemainingTime>
+          </>
+        )}
+      </StyledTile>
     );
   }
 }
