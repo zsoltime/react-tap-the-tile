@@ -22,3 +22,14 @@ export const Title = styled.h2`
     margin-bottom: 2rem;
   }
 `;
+
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 1.1875rem);
+  margin: auto;
+  max-width: 800px;
+  width: 100%;
+`;

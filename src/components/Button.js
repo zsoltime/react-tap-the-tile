@@ -6,11 +6,12 @@ const StyledButton = styled.button.attrs(props => ({
   type: props.type ? props.type : 'button',
 }))`
   background-color: ${props =>
-    props.primary ? '#6ab68a' : '#363636'};
+    props.primary ? '#46b980' : '#363636'};
   border: 0;
   border-radius: 0.25rem;
   color: ${props => (props.primary ? 'inherit' : '#fff')};
   font-size: 1.5rem;
+  max-width: 12rem;
   padding: 0.75rem 1rem;
   user-select: none;
   width: 100%;

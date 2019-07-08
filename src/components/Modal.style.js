@@ -17,7 +17,7 @@ export const Content = styled(DialogContent)`
 `;
 
 export const Overlay = styled(DialogOverlay)`
-  background-color: hsla(325, 35%, 55%);
+  background-color: #46b980; /* hsl(150, 45%, 50%); */
   bottom: 0;
   display: flex;
   left: 0;

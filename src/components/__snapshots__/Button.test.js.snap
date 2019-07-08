@@ -7,6 +7,7 @@ exports[`<Button /> matches snapshot 1`] = `
   border-radius: 0.25rem;
   color: #fff;
   font-size: 1.5rem;
+  max-width: 12rem;
   padding: 0.75rem 1rem;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -34,11 +35,12 @@ exports[`<Button /> matches snapshot 1`] = `
 
 exports[`<Button /> matches snapshot if primary 1`] = `
 .c0 {
-  background-color: #6ab68a;
+  background-color: #46b980;
   border: 0;
   border-radius: 0.25rem;
   color: inherit;
   font-size: 1.5rem;
+  max-width: 12rem;
   padding: 0.75rem 1rem;
   -webkit-user-select: none;
   -moz-user-select: none;
