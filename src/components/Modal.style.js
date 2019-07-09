@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 
 export const Content = styled(DialogContent)`

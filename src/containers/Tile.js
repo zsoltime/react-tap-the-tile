@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const StyledTile = styled.button.attrs({ type: 'button' })`
   align-items: stretch;
