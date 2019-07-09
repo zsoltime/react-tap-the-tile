@@ -112,8 +112,9 @@ export class Game extends Component {
     return id;
   };
 
-  handleClick = i => {
+  handleClick = (i, secs) => {
     const tile = this.state.tiles[i];
+    const points = Math.ceil(secs / 1000);
 
     if (!tile.isActive) {
       return this.gameOver();
@@ -132,7 +133,7 @@ export class Game extends Component {
         : 0;
 
       return {
-        score: state.score + POINTS_PER_CORRECT,
+        score: state.score + points,
         tiles: {
           ...state.tiles,
           [i]: tile,
@@ -159,6 +160,7 @@ export class Game extends Component {
       score: 0,
       showGameOver: false,
       showSplash: false,
+      tiles: { ...INITIAL_TILES },
     });
   };
 

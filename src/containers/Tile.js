@@ -25,7 +25,7 @@ const RemainingTime = styled.div`
 `;
 
 const DEFAULT_TIMER = 5000;
-const TIMER_INTERVAL = 500;
+const TIMER_INTERVAL = 1000;
 
 export class Tile extends Component {
   static propTypes = {
@@ -60,6 +60,14 @@ export class Tile extends Component {
     clearInterval(this.intervalID);
   }
 
+  handleClick = () => {
+    this.props.onClick(this.props.id, this.state.timeRemaining);
+  };
+
+  handleTimeout = () => {
+    this.props.onTimeout(this.props.id);
+  };
+
   startTimer = () => {
     if (!this.props.isActive) {
       return;
@@ -71,7 +79,7 @@ export class Tile extends Component {
         this.state.timeRemaining <= TIMER_INTERVAL
       ) {
         this.stopTimer();
-        this.props.onTimeout(this.props.id);
+        this.handleTimeout();
         return;
       }
 
@@ -91,10 +99,10 @@ export class Tile extends Component {
 
   render() {
     const { timeRemaining } = this.state;
-    const { clicksRemaining, id, isActive, onClick } = this.props;
+    const { clicksRemaining, isActive } = this.props;
 
     return (
-      <StyledTile isActive={isActive} onClick={() => onClick(id)}>
+      <StyledTile isActive={isActive} onClick={this.handleClick}>
         {isActive && (
           <>
             <RemainingClicks key="0">
