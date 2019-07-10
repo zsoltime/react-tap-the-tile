@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GameOver /> displays score and high score correctly 1`] = `
+.c0 {
+  font-size: 1.25rem;
+  font-weight: 300;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.c0 p {
+  margin: 0 0 1rem;
+}
+
+<div
+  class="c0"
+>
+  <p>
+    Oh noes! You tapped a white tile!
+  </p>
+  <p>
+    <strong>
+      Score: 57
+    </strong>
+  </p>
+  <p>
+    <strong>
+      High Score: 429
+    </strong>
+  </p>
+  <p>
+    Don't give up and try again.
+  </p>
+</div>
+`;

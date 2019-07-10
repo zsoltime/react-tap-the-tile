@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Tile /> renders button with remaining time and clicks left 1`] = `
+.c0 {
+  -webkit-align-items: stretch;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  background-color: #363636;
+  border: 1px solid rgba(0,0,0,0.8);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 23%;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
+  width: 23%;
+}
+
+.c1 {
+  font-size: 2.5rem;
+}
+
+.c2 {
+  font-size: 0.825rem;
+}
+
+<button
+  class="c0"
+  type="button"
+>
+  <div
+    class="c1"
+  >
+    5
+  </div>
+  <div
+    class="c2"
+  >
+    5
+  </div>
+</button>
+`;
+
+exports[`<Tile /> renders button with remaining time if only one click is left 1`] = `
+.c0 {
+  -webkit-align-items: stretch;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  background-color: #363636;
+  border: 1px solid rgba(0,0,0,0.8);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 23%;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
+  width: 23%;
+}
+
+.c1 {
+  font-size: 2.5rem;
+}
+
+.c2 {
+  font-size: 0.825rem;
+}
+
+<button
+  class="c0"
+  type="button"
+>
+  <div
+    class="c1"
+  />
+  <div
+    class="c2"
+  >
+    5
+  </div>
+</button>
+`;
+
+exports[`<Tile /> renders empty button if inactive 1`] = `
+.c0 {
+  -webkit-align-items: stretch;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.8);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 23%;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
+  width: 23%;
+}
+
+<button
+  class="c0"
+  type="button"
+/>
+`;

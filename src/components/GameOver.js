@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components/macro';
 
 import Button from './Button';
@@ -29,6 +30,12 @@ const GameOver = ({ highScore, onStart, score }) => {
       </Button>
     </>
   );
+};
+
+GameOver.propTypes = {
+  highScore: PropTypes.number.isRequired,
+  onStart: PropTypes.func.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
 export default GameOver;

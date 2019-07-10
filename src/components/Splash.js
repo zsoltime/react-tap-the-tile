@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components/macro';
 
 import Button from './Button';
@@ -38,5 +39,9 @@ const Splash = ({ onStart }) => (
     </Button>
   </>
 );
+
+Splash.propTypes = {
+  onStart: PropTypes.func.isRequired,
+};
 
 export default Splash;

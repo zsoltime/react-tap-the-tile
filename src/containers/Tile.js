@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/macro';
 
-const StyledTile = styled.button.attrs({ type: 'button' })`
+export const StyledTile = styled.button.attrs({ type: 'button' })`
   align-items: stretch;
   background-color: ${props => (props.isActive ? '#363636' : '#fff')};
   border: 1px solid rgba(0, 0, 0, 0.8);
@@ -30,7 +30,8 @@ const TIMER_INTERVAL = 1000;
 export class Tile extends Component {
   static propTypes = {
     clicksRemaining: PropTypes.number,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     isActive: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
     onTimeout: PropTypes.func.isRequired,
@@ -106,10 +107,10 @@ export class Tile extends Component {
         {isActive && (
           <>
             <RemainingClicks key="0">
-          {clicksRemaining > 1 && clicksRemaining}
+              {clicksRemaining > 1 && clicksRemaining}
             </RemainingClicks>
             <RemainingTime key="1">
-          {timeRemaining > 0 && Math.floor(timeRemaining / 1000)}
+              {timeRemaining > 0 && Math.floor(timeRemaining / 1000)}
             </RemainingTime>
           </>
         )}
