@@ -11,25 +11,11 @@ import { Wrapper } from '../components/Common.style';
 
 const MAX_ACTIVE_TILES = 5;
 const NUMBER_OF_CLICKS = [1, 1, 1, 1, 1, 1, 1, 1, 3, 5];
-const POINTS_PER_CORRECT = 5;
-const INITIAL_TILES = {
-  0: { clicksRemaining: 0, isActive: false },
-  1: { clicksRemaining: 0, isActive: false },
-  2: { clicksRemaining: 0, isActive: false },
-  3: { clicksRemaining: 0, isActive: false },
-  4: { clicksRemaining: 0, isActive: false },
-  5: { clicksRemaining: 0, isActive: false },
-  6: { clicksRemaining: 0, isActive: false },
-  7: { clicksRemaining: 0, isActive: false },
-  8: { clicksRemaining: 0, isActive: false },
-  9: { clicksRemaining: 0, isActive: false },
-  10: { clicksRemaining: 0, isActive: false },
-  11: { clicksRemaining: 0, isActive: false },
-  12: { clicksRemaining: 0, isActive: false },
-  13: { clicksRemaining: 0, isActive: false },
-  14: { clicksRemaining: 0, isActive: false },
-  15: { clicksRemaining: 0, isActive: false },
+const INITIAL_TILE = {
+  clicksRemaining: 0,
+  isActive: false,
 };
+const INITIAL_TILES = Array(16).fill(INITIAL_TILE);
 
 export class Game extends Component {
   state = {
@@ -39,7 +25,7 @@ export class Game extends Component {
     score: 0,
     showGameOver: false,
     showSplash: true,
-    tiles: { ...INITIAL_TILES },
+    tiles: [...INITIAL_TILES],
   };
 
   componentWillUnmount() {
@@ -47,44 +33,32 @@ export class Game extends Component {
   }
 
   activateTile = id => {
-    const tileId = id ? id : this.getRandomTile();
+    const tileId = id ? id : this.getRandomTileId();
 
-    if (!id && this.activeTiles().length >= MAX_ACTIVE_TILES) {
+    if (!id && this.getActiveTiles().length >= MAX_ACTIVE_TILES) {
       return;
     }
 
     this.setState(state => ({
-      tiles: {
-        ...state.tiles,
-        [tileId]: {
+      tiles: state.tiles.map((tile, i) =>
+        i === tileId
+          ? {
           clicksRemaining: random(NUMBER_OF_CLICKS),
           isActive: true,
-        },
-      },
+            }
+          : tile
+      ),
     }));
   };
 
-  activeTiles = () => {
-    const { tiles } = this.state;
-    const filterActives = (filtered, curr) => {
-      if (tiles[curr].isActive) {
-        return [...filtered, { ...tiles[curr], id: curr }];
-      }
-      return filtered;
-    };
-
-    return Object.keys(tiles).reduce(filterActives, []);
-  };
+  getActiveTiles = () =>
+    this.state.tiles.filter(tile => tile.isActive);
 
   deactivateTile = id => {
     this.setState(state => ({
-      tiles: {
-        ...state.tiles,
-        [id]: {
-          clicksRemaining: 0,
-          isActive: false,
-        },
-      },
+      tiles: state.tiles.map((tile, i) =>
+        i === id ? { ...INITIAL_TILE } : tile
+      ),
     }));
   };
 
@@ -98,22 +72,18 @@ export class Game extends Component {
           : state.highestScore,
       isRunning: false,
       showGameOver: true,
-      tiles: { ...INITIAL_TILES },
+      tiles: [...INITIAL_TILES],
     }));
   };
 
-  getRandomTile = () => {
+  getRandomTileId = () => {
     const id = random(15);
 
-    if (this.isAlreadyActive(id)) {
-      return this.getRandomTile();
-    }
-
-    return id;
+    return this.isAlreadyActive(id) ? this.getRandomTileId() : id;
   };
 
-  handleClick = (i, secs) => {
-    const tile = this.state.tiles[i];
+  handleClick = (id, secs) => {
+    const tile = this.state.tiles[id];
     const points = Math.ceil(secs / 1000);
 
     if (!tile.isActive) {
@@ -124,34 +94,36 @@ export class Game extends Component {
     this.activateTile();
 
     this.setState(state => {
-      const tile = { ...state.tiles[i] };
-      const moreClicksAvailable = tile.clicksRemaining > 1;
+      const updatedTile = { ...state.tiles[id] };
+      const moreClicksAvailable = updatedTile.clicksRemaining > 1;
 
-      tile.isActive = moreClicksAvailable ? true : false;
-      tile.clicksRemaining = moreClicksAvailable
-        ? tile.clicksRemaining - 1
+      updatedTile.isActive = moreClicksAvailable ? true : false;
+      updatedTile.clicksRemaining = moreClicksAvailable
+        ? updatedTile.clicksRemaining - 1
         : 0;
 
+      const score = state.score + points;
+      const tiles = state.tiles.map((tile, i) =>
+        i === id ? updatedTile : tile
+      );
+
       return {
-        score: state.score + points,
-        tiles: {
-          ...state.tiles,
-          [i]: tile,
-        },
+        score,
+        tiles,
       };
     });
   };
 
-  handleTimeout = i => {
+  handleTimeout = id => {
     this.setState(state => ({
-      missedTiles: state.missedTiles + state.tiles[i].clicksRemaining,
+      missedTiles:
+        state.missedTiles + state.tiles[id].clicksRemaining,
     }));
-    this.deactivateTile(i);
+    this.deactivateTile(id);
     this.activateTile();
   };
 
-  isAlreadyActive = id =>
-    !!this.activeTiles().filter(tile => tile.id == id).length;
+  isAlreadyActive = id => this.state.tiles[id].isActive;
 
   resetGame = () => {
     this.setState({
@@ -160,7 +132,7 @@ export class Game extends Component {
       score: 0,
       showGameOver: false,
       showSplash: false,
-      tiles: { ...INITIAL_TILES },
+      tiles: [...INITIAL_TILES],
     });
   };
 
@@ -169,23 +141,33 @@ export class Game extends Component {
     this.activateTile();
 
     this.intervalID = window.setInterval(() => {
-      if (this.activeTiles().length < MAX_ACTIVE_TILES) {
+      if (this.getActiveTiles().length < MAX_ACTIVE_TILES) {
         this.activateTile();
       }
     }, 1000);
   };
 
   render() {
+    const {
+      highestScore,
+      isRunning,
+      missedTiles,
+      score,
+      showGameOver,
+      showSplash,
+      tiles,
+    } = this.state;
+
     return (
       <>
         <main>
           <Wrapper>
             <Board
-              tiles={this.state.tiles}
+              tiles={tiles}
               onClick={this.handleClick}
               onTimeout={this.handleTimeout}
             />
-            {this.state.isRunning && (
+            {isRunning && (
               <Button
                 primary
                 onClick={() =>
@@ -196,23 +178,22 @@ export class Game extends Component {
               </Button>
             )}
             <div className="score">
-              Score: {this.state.score} | Missed:{' '}
-              {this.state.missedTiles}
+              Score: {score} | Missed: {missedTiles}
             </div>
           </Wrapper>
 
-          <Overlay isOpen={this.state.showSplash}>
+          <Overlay isOpen={showSplash}>
             <Content>
               <Splash onStart={this.startGame} />
             </Content>
           </Overlay>
 
-          <Overlay isOpen={this.state.showGameOver}>
+          <Overlay isOpen={showGameOver}>
             <Content>
               <GameOver
-                highScore={this.state.highestScore}
+                highScore={highestScore}
                 onStart={this.startGame}
-                score={this.state.score}
+                score={score}
               />
             </Content>
           </Overlay>
